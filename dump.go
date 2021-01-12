@@ -64,12 +64,20 @@ body {
 	background:rgb(221,247,200);
 	text-align:right;
 }
+.name {
+	display: block;
+	color: gray;
+	padding: 2px;
+}
 --></style>
 <h1>WhatsApp</h1>
 
 <div class="chat">
 {{range .}}	
 	<p class="message {{if .JID}}incoming{{else}}outgoing{{end}}">
+	    {{ if and .Name .JID }}
+          <span class="name">{{ .Name}}</span>
+		{{ end }}
 		{{ nl2br .Text }}
 		{{ if eq .MediaExt ".jpg" }}
 			<img src="../{{.Media}}">

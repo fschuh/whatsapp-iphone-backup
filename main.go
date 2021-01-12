@@ -159,9 +159,14 @@ func (app *App) GetSessions() ([]Session, error) {
 func (app *App) SessionMessages(session Session) []Message {
 	var err error
 	query := `
-	SELECT ZFROMJID, ZPUSHNAME, ZTEXT, ZMEDIAITEM
-	FROM ZWAMESSAGE
-	WHERE ZCHATSESSION = ?
+    SELECT ZFROMJID, ZTEXT, ZMEDIAITEM, GROUPSESSION.ZPARTNERNAME AS GROUPNAME, GROUPPUSH.ZPUSHNAME AS GROUPPUSHNAME 
+	FROM ZWAMESSAGE LEFT JOIN ZWAGROUPMEMBER
+	ON ZWAMESSAGE.ZGROUPMEMBER = ZWAGROUPMEMBER.Z_PK 
+	LEFT JOIN ZWAPROFILEPUSHNAME AS GROUPPUSH
+	ON ZWAGROUPMEMBER.ZMEMBERJID = GROUPPUSH.ZJID
+	LEFT JOIN ZWACHATSESSION AS GROUPSESSION
+	ON ZWAGROUPMEMBER.ZMEMBERJID = GROUPSESSION.ZCONTACTJID
+	WHERE ZWAMESSAGE.ZCHATSESSION = ?
 	ORDER BY ZSORT 
 	`
 	rows, err := app.ChatDB.Query(query, session.ID)
@@ -176,11 +181,18 @@ func (app *App) SessionMessages(session Session) []Message {
 		var msg Message
 		var mediaID *int
 		var text *string
-		if err := rows.Scan(&msg.JID, &msg.Name, &text, &mediaID); err != nil {
+		var groupName *string
+		var groupPushName *string
+		if err := rows.Scan(&msg.JID, &text, &mediaID, &groupName, &groupPushName); err != nil {
 			log.Println("Error:", err)
 		}
 		if text != nil {
 			msg.Text = *text
+		}
+		if groupName != nil {
+			msg.Name = groupName
+		} else if groupPushName != nil {
+			msg.Name = groupPushName
 		}
 		if mediaID != nil {
 			media := app.MediaMap[*mediaID]
