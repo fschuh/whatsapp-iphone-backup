@@ -52,8 +52,9 @@ body {
 	margin:auto;
 }
 .message {
-	margin: 5px;
-	padding: 8px;
+	margin: 0.4em;
+	padding: 0.5em;
+	min-height: 1.5em;
 }
 .message img { max-width: 100%; display: block; }
 .message video { max-width: 100%; display: block; }
@@ -65,9 +66,19 @@ body {
 	text-align:right;
 }
 .name {
-	display: block;
-	color: gray;
-	padding: 2px;
+	display: inline-block;
+	color: darkslategray;
+	font-size: 1.05em;
+}
+.date {
+    display: inline-block;
+    color: darkslategray;
+    padding-left: 0.5em;
+    font-size: 0.90em;
+}
+.content {
+    display: block;
+    padding-top: .5em;
 }
 --></style>
 <h1>WhatsApp</h1>
@@ -78,16 +89,19 @@ body {
 	    {{ if and .Name .JID }}
           <span class="name">{{ .Name}}</span>
 		{{ end }}
-		{{ nl2br .Text }}
-		{{ if eq .MediaExt ".jpg" }}
-			<img src="../{{.Media}}">
-		{{ else if eq .MediaExt ".png" }}
-			<img src="../{{.Media}}">
-		{{ else if eq .MediaExt ".mp4" }}
-			<video controls>
-				<source src="../{{.Media}}" type="video/mp4">
-			</video>
-		{{end}}
+		<span class="date">{{ .Date }}</span>
+		<span class="content">
+			{{ nl2br .Text }}
+			{{ if eq .MediaExt ".jpg" }}
+				<img src="../{{.Media}}">
+			{{ else if eq .MediaExt ".png" }}
+				<img src="../{{.Media}}">
+			{{ else if eq .MediaExt ".mp4" }}
+				<video controls>
+					<source src="../{{.Media}}" type="video/mp4">
+				</video>
+			{{end}}
+		</span>
 	</p>
 {{end}}
 </div><!-- chat -->

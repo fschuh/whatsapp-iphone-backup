@@ -37,6 +37,7 @@ type Media struct {
 type Message struct {
 	JID      *string
 	Name     *string
+	Date     string
 	Text     string
 	Media    string
 	MediaExt string
@@ -159,13 +160,15 @@ func (app *App) GetSessions() ([]Session, error) {
 func (app *App) SessionMessages(session Session) []Message {
 	var err error
 	query := `
-    SELECT ZFROMJID, ZTEXT, ZMEDIAITEM, GROUPSESSION.ZPARTNERNAME AS GROUPNAME, GROUPPUSH.ZPUSHNAME AS GROUPPUSHNAME 
-	FROM ZWAMESSAGE LEFT JOIN ZWAGROUPMEMBER
-	ON ZWAMESSAGE.ZGROUPMEMBER = ZWAGROUPMEMBER.Z_PK 
+    SELECT ZFROMJID, ZTEXT, ZMEDIAITEM, GROUPSESSION.ZPARTNERNAME AS GROUPNAME, 
+	  GROUPPUSH.ZPUSHNAME AS GROUPPUSHNAME, datetime('2001-01-01', "ZMESSAGEDATE" || ' seconds') AS TIMESTAMP
+	FROM ZWAMESSAGE 
+	LEFT JOIN ZWAGROUPMEMBER
+	 ON ZWAMESSAGE.ZGROUPMEMBER = ZWAGROUPMEMBER.Z_PK 
 	LEFT JOIN ZWAPROFILEPUSHNAME AS GROUPPUSH
-	ON ZWAGROUPMEMBER.ZMEMBERJID = GROUPPUSH.ZJID
+	 ON ZWAGROUPMEMBER.ZMEMBERJID = GROUPPUSH.ZJID
 	LEFT JOIN ZWACHATSESSION AS GROUPSESSION
-	ON ZWAGROUPMEMBER.ZMEMBERJID = GROUPSESSION.ZCONTACTJID
+	 ON ZWAGROUPMEMBER.ZMEMBERJID = GROUPSESSION.ZCONTACTJID
 	WHERE ZWAMESSAGE.ZCHATSESSION = ?
 	ORDER BY ZSORT 
 	`
@@ -183,7 +186,7 @@ func (app *App) SessionMessages(session Session) []Message {
 		var text *string
 		var groupName *string
 		var groupPushName *string
-		if err := rows.Scan(&msg.JID, &text, &mediaID, &groupName, &groupPushName); err != nil {
+		if err := rows.Scan(&msg.JID, &text, &mediaID, &groupName, &groupPushName, &msg.Date); err != nil {
 			log.Println("Error:", err)
 		}
 		if text != nil {
