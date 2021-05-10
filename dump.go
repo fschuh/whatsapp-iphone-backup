@@ -93,17 +93,17 @@ body {
 		<span class="content">
 			{{ nl2br .Text }}
 			{{ if eq .MediaExt ".jpg" }}
-				<img src="../{{.Media}}">
+				<img loading="lazy" src="../{{.Media}}">
 			{{ else if eq .MediaExt ".png" }}
-				<img src="../{{.Media}}">
+				<img loading="lazy" src="../{{.Media}}">
 			{{ else if eq .MediaExt ".webp" }}
-				<img src="../{{.Media}}">
+				<img loading="lazy" src="../{{.Media}}">
 			{{ else if eq .MediaExt ".mp4" }}
-				<video controls>
+				<video preload="metadata" controls>
 					<source src="../{{.Media}}" type="video/mp4">
 				</video>
 			{{ else if eq .MediaExt ".opus" }}
-				<audio src="../{{.Media}}" controls />
+				<audio preload="none" src="../{{.Media}}" controls />
 				Your browser does not support the audio element. Try Firefox.
 				</audio>
 			{{end}}
