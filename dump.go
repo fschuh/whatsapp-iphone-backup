@@ -96,6 +96,8 @@ body {
 				<img src="../{{.Media}}">
 			{{ else if eq .MediaExt ".png" }}
 				<img src="../{{.Media}}">
+			{{ else if eq .MediaExt ".webp" }}
+				<img src="../{{.Media}}">
 			{{ else if eq .MediaExt ".mp4" }}
 				<video controls>
 					<source src="../{{.Media}}" type="video/mp4">
