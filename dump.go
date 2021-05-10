@@ -118,9 +118,10 @@ body {
 	check("DumpSession creating file", err)
 	defer out.Close()
 
-	if len(messages) > 30 {
-		messages = messages[len(messages)-30:]
-	}
+	//optional: only dump last 30 messages per chat to HTML
+	//if len(messages) > 30 {
+	//	messages = messages[len(messages)-30:]
+	//}
 	err = t.Execute(out, messages)
 	check("DumpSession executing template", err)
 }
