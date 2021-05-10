@@ -102,6 +102,10 @@ body {
 				<video controls>
 					<source src="../{{.Media}}" type="video/mp4">
 				</video>
+			{{ else if eq .MediaExt ".opus" }}
+				<audio src="../{{.Media}}" controls />
+				Your browser does not support the audio element. Try Firefox.
+				</audio>
 			{{end}}
 		</span>
 	</p>
