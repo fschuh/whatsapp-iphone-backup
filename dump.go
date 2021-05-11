@@ -106,6 +106,8 @@ body {
 				<audio preload="none" src="../{{.Media}}" controls />
 				Your browser does not support the audio element. Try Firefox.
 				</audio>
+			{{ else if .MediaExt }}
+				<a href="../{{.Media}}" />FILE: {{.Media}}</a>
 			{{end}}
 		</span>
 	</p>
