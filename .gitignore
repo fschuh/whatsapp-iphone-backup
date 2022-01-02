@@ -1,3 +1,6 @@
 *.db
 run.sh
 exporter
+output
+*.exe
+.vscode
