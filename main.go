@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -218,6 +219,25 @@ func (app *App) SessionMessages(session Session) []Message {
 	return messages
 }
 
+func UpdateMediaFileDates(messages []Message, outputPath string) {
+	for _, message := range messages {
+		if message.Media != "" {
+			parsedDateTime, err := time.Parse("2006-01-02 15:04:05", message.Date)
+
+			if err != nil {
+				log.Println("Warning: invalid date format in ", message.Date)
+			} else {
+				filePath := filepath.Join(outputPath, message.Media)
+				err = changeFileDate(filePath, parsedDateTime)
+
+				if err != nil {
+					log.Println("Warning: failed to update the date for file ", filePath)
+				}
+			}
+		}
+	}
+}
+
 func main() {
 	fmt.Println("iPhone Extractor")
 
@@ -241,6 +261,8 @@ func main() {
 		fmt.Println("Building session:", session.ID, " : ", session.Name)
 		messages := app.SessionMessages(session)
 		app.DumpSession(session, messages)
+		UpdateMediaFileDates(messages, *dstPtr)
+
 		counter++
 		if counter > *limitPtr {
 			break
