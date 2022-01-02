@@ -1,5 +1,3 @@
 *.db
-go.mod
-*.mod
 run.sh
 exporter
